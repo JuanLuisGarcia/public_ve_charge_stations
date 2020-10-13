@@ -1,5 +1,6 @@
 import requests
 import sys
+import csv
 
 url_all_station = "https://ws.consorcidetransports.com/produccio/ximelib-mobile/rest/devicegroups"
 
@@ -13,17 +14,12 @@ headers = {
 response = requests.request("POST", url_all_station, data=payload, headers=headers)
 all_station_json_data = response.json()
 
-stations_dict = {value["id"]: {'lat': value['lat'], 'lng': value['lng']} for value in all_station_json_data}
-
-# when we send request to all charge stations it's so slow
-if '-r' not in sys.argv:
-    for value in all_station_json_data:
-        url_station_status = f'https://ws.consorcidetransports.com/produccio/ximelib-mobile/rest/devicegroups/{value["id"]}'
-        response = requests.request("GET", url_station_status, headers=headers)
-        station_status = response.json()
-        stations_dict[value['id']] = {
-            'lat': value['lat'],
-            'lng': value['lng'],
-            'name': station_status['name']
-        }
-print(stations_dict)
+out_file = open('vw_ximelib_import.csv', 'w')
+writer = csv.writer(out_file)
+for value in all_station_json_data:
+    url_station_status = f'https://ws.consorcidetransports.com/produccio/ximelib-mobile/rest/devicegroups/{value["id"]}'
+    response = requests.request("GET", url_station_status, headers=headers)
+    station_status = response.json()
+    writer.writerow((value['lat'], value['lng'], station_status['name']))
+out_file.close()
+print('Done!!')
