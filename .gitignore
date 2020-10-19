@@ -1,0 +1,3 @@
+# Ignore your custom settings, common IDE files...
+.idea/*
+
