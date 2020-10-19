@@ -1,5 +1,4 @@
 import requests
-import sys
 import csv
 
 url_all_station = "https://ws.consorcidetransports.com/produccio/ximelib-mobile/rest/devicegroups"
@@ -20,6 +19,6 @@ for value in all_station_json_data:
     url_station_status = f'https://ws.consorcidetransports.com/produccio/ximelib-mobile/rest/devicegroups/{value["id"]}'
     response = requests.request("GET", url_station_status, headers=headers)
     station_status = response.json()
-    writer.writerow((value['lat'], value['lng'], station_status['name']))
+    writer.writerow((value['lng'], value['lat'], station_status['name']))
 out_file.close()
 print('Done!!')
